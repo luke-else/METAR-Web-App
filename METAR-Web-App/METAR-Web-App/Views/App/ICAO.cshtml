@@ -1,0 +1,123 @@
+﻿@using METAR_Web_App.Models;
+
+@{
+    ViewData["Title"] = "Airfield Weather Information";
+}
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="card bg-light mb-3">
+            <div class="card-header">
+                ICAO
+
+                @{
+                    if (Model != null)
+                    {
+
+                        <span> - @DateTime.UtcNow.ToString("HH:mm")Z</span>
+                    }
+                }
+
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="ICAO Code" name="ICAO">
+                    </div>
+                    <button type="submit" onclick="spinnerLoad()" class="btn btn-dark">Check Weather</button> <span id="spinner"></span>
+
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-6">
+
+        @{
+
+            if (Model != null)
+            {
+                if (Model.ICAOError == false)
+                {
+                    //METAR
+
+                    if (Model.METAR != null)
+                    {
+                        <div class="card border-success mb-3">
+                            <div class="card-header">METAR</div>
+                            <div class="card-body">
+                                <p class="card-text">@Model.METAR[0]</p>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card border-danger mb-3">
+                            <div class="card-header">METAR</div>
+                            <div class="card-body">
+                                <p class="card-text">Sorry - No METAR available for @Model.ICAO</p>
+                            </div>
+                        </div>
+                    }
+
+
+                    //TAF
+
+
+                    if (Model.TAF != null)
+                    {
+                        <div class="card border-success mb-3">
+                            <div class="card-header">TAF</div>
+                            <div class="card-body">
+                                @{
+                                    foreach (var item in Model.TAF)
+                                    {
+                                        <p class="card-text">@item</p>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="card border-danger mb-3">
+                            <div class="card-header">TAF</div>
+                            <div class="card-body">
+                                <p class="card-text">Sorry - No TAF available for @Model.ICAO</p>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="card border-danger mb-3">
+                        <div class="card-header">Invalid ICAO</div>
+                        <div class="card-body">
+                            <p class="card-text">Invalid ICAO '@Model.ICAO' - Please try again!</p>
+                        </div>
+                    </div>
+                }
+            }
+
+        }
+
+    </div>
+
+
+    <script>
+        function spinnerLoad() {
+            var spinner = document.getElementById("spinner");
+            spinner.className = "spinner-border";
+        }
+    </script>
+
+</div>
+
+
+
+
+
